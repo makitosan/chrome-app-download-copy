@@ -4,7 +4,14 @@ var selectDirectoryButton = document.querySelector('#select_file');
 var copyFileButton = document.querySelector('#copy_file');
 var listVolumesButton = document.querySelector('#list_volumes');
 var downloadDirButton = document.querySelector('#download_dir');
+var toggleSettingsButton = document.querySelector('#settings');
 
+var textDownloadDir = document.querySelector('#txt_download_dir');
+var textOutputDir = document.querySelector('#txt_output_dir');
+
+function toggleSettings () {
+  $('#settings_area').toggle();
+}
 
 function listVolumes () {
   chrome.fileSystem.getVolumeList(function (volumes) {
@@ -27,8 +34,8 @@ function chooseDownloadDir () {
     try { // TODO remove try once retain is in stable.
       chrome.storage.local.set(
         {'downloadDir': chrome.fileSystem.retainEntry(theEntry)});
+      refreshSettings();
     } catch (e) {}
-    // loadFileEntry(readOnlyEntry);
   });
 }
 
@@ -41,8 +48,8 @@ function chooseOutputDir () {
     try { // TODO remove try once retain is in stable.
       chrome.storage.local.set(
         {'outputDir': chrome.fileSystem.retainEntry(theEntry)});
+      refreshSettings();
     } catch (e) {}
-    // loadFileEntry(readOnlyEntry);
   });
 }
 
@@ -51,9 +58,9 @@ function saveFile() {
   // TODO downloadDir, outputDir のチェック
 
   chrome.storage.local.get("downloadDir", function(storage) {
-    console.log(storage);
+    // console.log(storage);
     chrome.fileSystem.restoreEntry(storage.downloadDir, function(dir) {
-      console.log(dir);
+      // console.log(dir);
       // https://qiita.com/k7a/items/4ad843cdc1f05c801d1d
       if (dir.isDirectory) {
         // 6.
@@ -72,12 +79,12 @@ function saveFile() {
                 if (a.datetime > b.datetime) return -1;
                 return 0;
               });
-              console.log(entries);
+              // console.log(entries);
               chrome.storage.local.get("outputDir", function(storage) {
                 console.log(storage);
                 chrome.fileSystem.restoreEntry(storage.outputDir, function(dir) {
-                  console.log('copy file');
-                  console.log(dir);
+                  // console.log('copy file');
+                  // console.log(dir);
                   entries[0].entry.copyTo(dir);
                 });
               });
@@ -89,10 +96,10 @@ function saveFile() {
             } else {
               results.forEach(function(item) {
                 if (item.isFile && item.fullPath.endsWith('.hex')) {
-                  console.log(item);
+                  // console.log(item);
                   // entries = entries.concat(item.fullPath);
                   item.getMetadata(function(metadata){
-                    console.log(metadata);
+                    // console.log(metadata);
                     entries.push({
                       datetime: metadata.modificationTime,
                       entry: item
@@ -142,6 +149,24 @@ function writeFileEntry(writableEntry, opt_blob, callback) {
   }, errorHandler);
 }
 
+function refreshSettings() {
+  chrome.storage.local.get("downloadDir", function(storage) {
+    console.log(storage);
+    if(storage) {
+      chrome.fileSystem.restoreEntry(storage.downloadDir, function (dir) {
+        textDownloadDir.innerHTML = dir.fullPath;
+      });
+    }
+  });
+  chrome.storage.local.get("outputDir", function(storage) {
+    console.log(storage);
+    if(storage) {
+      chrome.fileSystem.restoreEntry(storage.outputDir, function (dir) {
+        textOutputDir.innerHTML = dir.fullPath;
+      });
+    }
+  });
+}
 
 function clearState() {
   img.src = "";
@@ -157,3 +182,10 @@ copyFileButton.addEventListener('click', saveFile);
 selectDirectoryButton.addEventListener('click', chooseOutputDir);
 listVolumesButton.addEventListener('click', listVolumes);
 downloadDirButton.addEventListener('click', chooseDownloadDir);
+toggleSettingsButton.addEventListener('click', toggleSettings);
+
+$(window).on('load',function(){
+  console.log("loaded");
+  refreshSettings();
+  $('#settings_area').hide();
+});

@@ -1,85 +1,62 @@
-<html>
+<!doctype html>
 <!--
 Copyright (c) 2019 https://github.com/makitosan . All rights reserved.
 -->
+<html>
 <head>
-<style>
-body {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: -webkit-flex;
-  -webkit-flex-direction: column;
-  -webkit-align-items: stretch;
-}
-.dropping {
-  background: #ffcc00;
-}
-nav {
-	display: -webkit-flex;
-	-webkit-justify-content: center;
-	-webkit-align-items: center;
-}
-video {
-	width: 640px;
-	height: 480px;
-	background: rgba(0,0,0,0.25);
-}
-button {
-  display: inline-block;
-  background: -webkit-linear-gradient(#F9F9F9 40%, #E3E3E3 70%);
-  background: linear-gradient(#F9F9F9 40%, #E3E3E3 70%);
-  border: 1px solid #999;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  padding: 5px 8px;
-  outline: none;
-  white-space: nowrap;
-  -webkit-user-select: none;
-  user-select: none;
-  cursor: pointer;
-  text-shadow: 1px 1px #fff;
-  font-weight: 700;
-  font-size: 10pt;
-}
-button:not(:disabled):hover {
-  border-color: black;
-}
-button:not(:disabled):active {
-  background: -webkit-linear-gradient(#E3E3E3 40%, #F9F9F9 70%);
-  background: linear-gradient(#E3E3E3 40%, #F9F9F9 70%);
-}
-input, textarea {
-  box-shadow: 1px 1px 5px #ccc inset;
-  border: none;
-  padding: .5em;
-}
-[readonly] {
-  background: #eee;
-}
-[hidden] {
-  display: none;
-}
-textarea {
-  width: 100%;
-  height: 200px;
-  outline: none;
-  padding: 1px;
-  font-size: 20px;
-  padding: 1em;
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/all.min.css">
 </head>
 <body>
-  <nav>
-    <button id="download_dir">Select Download Dir</button>
-    <button id="select_file">Select Output Dir</button>
-    <button id="copy_file">Copy File</button>
-    <button id="list_volumes">List Volumes</button>
-  </nav>
-
+  <div class="container mt-2">
+    <div class="row">
+      <div class="col-9">
+        <button id="copy_file" class="btn btn-success btn-block">Copy File</button>
+      </div>
+      <div class="col-3">
+        <!-- Example single danger button -->
+        <div class="btn-group dropleft">
+          <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-cog"></i>
+          </button>
+          <div class="dropdown-menu">
+            <a id="download_dir" class="dropdown-item" href="#">Download Dir</a>
+            <a id="select_file" class="dropdown-item" href="#">Output Dir</a>
+            <a id="settings" class="dropdown-item" href="#">Show/Hide Settings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="settings_area" class="row mt-3">
+      <div class="col">
+        <table class="table">
+          <tbody>
+          <tr>
+            <td>Download Dir</td>
+            <td><div id="txt_download_dir"></div></td>
+          </tr>
+          <tr>
+            <td>Output Dir</td>
+            <td><div id="txt_output_dir"></div></td>
+          </tr>
+          <tr>
+            <td>Volume List</td>
+            <td><button id="list_volumes" class="btn btn-secondary">List Volumes</button></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- below rows are dummy to show all drop down menus when settings_area is hidden -->
+    <div class="row mt-3 mb-5">
+    </div>
+    <div class="row mt-3 mb-5">
+    </div>
+  </div>
+  <script src="assets/js/jquery-3.3.1.min.js" ></script>
+  <script src="assets/js/bootstrap.bundle.min.js" ></script>
   <script src="app.js"></script>
 </body>
 </html>
