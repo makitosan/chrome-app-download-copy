@@ -1,21 +1,12 @@
-# chrome-app-download-copy
-Chrome App to Copy Download File to Specific Directory
+# Copy Latest
+Chrome App to Copy the Latest File to Specific Directory
 
+## LICENSE
 
-## 
+Under MIT License except for external libraries/contents
 
-"downloads" is only allowed for extensions. って出て Chrome App だと使えないから困った。
-ダウンロードディレクトリを見つけるところから始めないといかん。
+External Libraries/Contents Included:
 
-## minifest.json で見る箇所
-
-File Handler: https://developer.chrome.com/apps/manifest/file_handlers
-
-## 
-
-Mac だと `chrome.fileSystem.getVolumeList(function (volumes) {` 使えないっぽい。
-エラー "Operation not supported on the current platform." が発生する。
-
-## File Copy の例
-
-https://stackoverflow.com/questions/33341616/chrome-packaged-app-copy-a-fileentry-to-users-download-directory
+- Font Awesome Free : https://fontawesome.com/license/free
+- Bootstrap : https://getbootstrap.com/docs/4.0/about/license/
+- jQuery: https://jquery.org/license/
