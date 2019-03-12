@@ -189,7 +189,7 @@ listVolumesButton.addEventListener('click', listVolumes);
 downloadDirButton.addEventListener('click', chooseDownloadDir);
 toggleSettingsButton.addEventListener('click', toggleSettings);
 
-$(window).on('load',function(){
+document.addEventListener("DOMContentLoaded", function(event) {
   console.log("loaded");
   refreshSettings();
   document.querySelector('#settings_area').style.display = 'none';
