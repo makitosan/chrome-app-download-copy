@@ -10,7 +10,12 @@ var textDownloadDir = document.querySelector('#txt_download_dir');
 var textOutputDir = document.querySelector('#txt_output_dir');
 
 function toggleSettings () {
-  $('#settings_area').toggle();
+  const settingsArea = document.querySelector('#settings_area');
+  if (settingsArea.style.display === "none") {
+    settingsArea.style.display = "block";
+  } else {
+    settingsArea.style.display = "none";
+  }
 }
 
 function listVolumes () {
@@ -187,5 +192,5 @@ toggleSettingsButton.addEventListener('click', toggleSettings);
 $(window).on('load',function(){
   console.log("loaded");
   refreshSettings();
-  $('#settings_area').hide();
+  document.querySelector('#settings_area').style.display = 'none';
 });
