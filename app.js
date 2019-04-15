@@ -8,6 +8,11 @@ var toggleSettingsButton = document.querySelector('#settings');
 
 var textDownloadDir = document.querySelector('#txt_download_dir');
 var textOutputDir = document.querySelector('#txt_output_dir');
+var textFileCopied = document.querySelector('#txt_file_copied');
+var textFileDatetime = document.querySelector('#txt_file_datetime');
+var textLog = document.querySelector('#txt_log');
+
+let entries = [];
 
 function toggleSettings () {
   const settingsArea = document.querySelector('#settings_area');
@@ -64,50 +69,60 @@ function saveFile() {
 
   chrome.storage.local.get("downloadDir", function(storage) {
     // console.log(storage);
+    // https://developer.chrome.com/apps/fileSystem
     chrome.fileSystem.restoreEntry(storage.downloadDir, function(dir) {
       // console.log(dir);
       // https://qiita.com/k7a/items/4ad843cdc1f05c801d1d
       if (dir.isDirectory) {
         // 6.
-        var dirReader = dir.createReader();
-        var entries = [];
+        const dirReader = dir.createReader();
+        entries = [];
 
         // 7.
         // Call the reader.readEntries() until no more results are returned.
         var readEntries = function() {
           dirReader.readEntries (function(results) {
-            // console.log(results);
+            console.log('results.length ' + results.length);
             if (!results.length) {
-              // sort by datetime 降順で
-              entries.sort((a, b) => {
-                if (a.datetime < b.datetime) return 1;
-                if (a.datetime > b.datetime) return -1;
-                return 0;
-              });
-              // console.log(entries);
-              chrome.storage.local.get("outputDir", function(storage) {
-                console.log(storage);
-                chrome.fileSystem.restoreEntry(storage.outputDir, function(dir) {
-                  // console.log('copy file');
-                  // console.log(dir);
-                  entries[0].entry.copyTo(dir);
-                });
-              });
-
-              // copy file to target
-
-              // console.log(entries.join("\n"));
-              // displayEntryData(chosenEntry);
+              console.log(entries.length);
+              textLog.innerHTML = 'waiting...';
+              setTimeout(function(){
+                if(entries.length > 0 ) {
+                  // console.log(entries);
+                  // sort by datetime desc
+                  entries.sort((a, b) => {
+                    // console.log('sort');
+                    return b.datetime - a.datetime;
+                  });
+                  console.log(entries);
+                  chrome.storage.local.get("outputDir", function(storage) {
+                    console.log(storage);
+                    chrome.fileSystem.restoreEntry(storage.outputDir, function(dir) {
+                      // copy file to target
+                      // console.log('copy file');
+                      // console.log(dir);
+                      entries[0].entry.copyTo(dir);
+                      textFileCopied.innerHTML = entries[0].entry.fullPath;
+                      textFileDatetime.innerHTML = entries[0].datetime;
+                      textLog.innerHTML = 'completed...(' + entries.length + ')';
+                    });
+                  });
+                } else {
+                  // error
+                  textLog.innerHTML = 'ERROR .hex file not found';
+                }
+              }, 500);
             } else {
               results.forEach(function(item) {
                 if (item.isFile && item.fullPath.endsWith('.hex')) {
+                  // console.log('file');
                   // console.log(item);
-                  // entries = entries.concat(item.fullPath);
+                  textLog.innerHTML = item.name;
                   item.getMetadata(function(metadata){
-                    // console.log(metadata);
-                    entries.push({
-                      datetime: metadata.modificationTime,
-                      entry: item
+                    console.log('metadata');
+                    entries = entries.concat({
+                     datetime: metadata.modificationTime,
+                     entry: item
                     });
                   }, errorHandler);
                 }
@@ -118,7 +133,6 @@ function saveFile() {
         };
         readEntries(); // Start reading dirs.
       }
-      // entry.moveTo(folder)
     })
   });
 }
